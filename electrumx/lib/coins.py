@@ -4015,3 +4015,34 @@ class Syscoin(AuxPowMixin, Coin):
     RPC_PORT = 8370
     REORG_LIMIT = 2000
     CHUNK_SIZE = 360
+
+
+class Butkoin(Coin):
+    NAME = "BUTK"
+    SHORTNAME = "BUTK"
+    NET = "mainnet"
+    XPUB_VERBYTES = bytes.fromhex("02fe52cc")
+    XPRV_VERBYTES = bytes.fromhex("02fe52f8")
+    GENESIS_HASH = ('001787e5f9c3cd249f84f0142071f609'
+                    '8d9e3b7ec8591ff73543ddc4900c1dc2')
+    P2PKH_VERBYTE = bytes.fromhex("4c")
+    P2SH_VERBYTES = (bytes.fromhex("10"),)
+    WIF_BYTE = bytes.fromhex("cc")
+    TX_COUNT_HEIGHT = 569399
+    TX_COUNT = 2157510
+    TX_PER_BLOCK = 4
+    RPC_PORT = 10998
+    REORG_LIMIT = 5000
+    PEERS = [
+        'electrum.butcoin.tech 50001',
+    ]
+    SESSIONCLS = DashElectrumX
+    DAEMON = daemon.DashDaemon
+    DESERIALIZER = lib_tx_dash.DeserializerDash
+
+    @classmethod
+    def header_hash(cls, header):
+        '''Given a header return the hash.'''
+        import x11_hash
+        return double_sha256(header)
+

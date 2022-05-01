@@ -24,9 +24,9 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 ENV SERVICES="tcp://:50001"
-ENV COIN=Bitcoin
+ENV COIN=BUTK
 ENV DB_DIRECTORY=/var/lib/electrumx
-ENV DAEMON_URL="http://username:password@hostname:port/"
+ENV DAEMON_URL="http://username:password@localhost:9998/"
 ENV ALLOW_ROOT=true
 ENV DB_ENGINE=rocksdb
 ENV MAX_SEND=10000000
