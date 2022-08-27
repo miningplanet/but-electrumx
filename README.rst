@@ -5,7 +5,7 @@
 
 
 ===============================================
-ElectrumX - Reimplementation of electrum-server Butkoin [BUTK] <https://butkoin.com>
+ElectrumX - Reimplementation of electrum-server [BUTK] `butkoin.com <https://butkoin.com>`_
 ===============================================
 
   :Licence: MIT
@@ -26,8 +26,11 @@ Documentation
 
 See `readthedocs <https://electrumx-spesmilo.readthedocs.io/>`_.
 
+
 Donations
 
 Butkoin - [BUTK] - XvrHWjw7zd4CQZkxbiZGt3dGE53vjrUGrs
+
 Raptoreum - [RTM] - RLFvcNYRxM6yeTRwEE4U8YCtC683XUoRwG
+
 Bitoreum - [BTRM] - BqndD9PnCGUrgJ64wzitWYkDYfwyViTsDL
