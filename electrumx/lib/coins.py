@@ -4053,3 +4053,30 @@ class Butkoin(Coin):
         import x11_hash
         return double_sha256(header)
 
+class Bitoreum(Coin):
+    NAME = "BTRM"
+    SHORTNAME = "BTRM"
+    NET = "mainnet"
+    XPUB_VERBYTES = bytes.fromhex("02fe52cc")
+    XPRV_VERBYTES = bytes.fromhex("02fe52f8")
+    GENESIS_HASH = ('3f590e1339dfd2a738315700c2d9d0b4'
+                    '4075d27fb488d4846283d3d65e462e03')
+    P2PKH_VERBYTE = bytes.fromhex("4c")
+    P2SH_VERBYTES = (bytes.fromhex("10"),)
+    WIF_BYTE = bytes.fromhex("cc")
+    TX_COUNT_HEIGHT = 119585
+    TX_COUNT = 261708
+    TX_PER_BLOCK = 4
+    RPC_PORT = 15168
+    REORG_LIMIT = 5000
+    PEERS = [
+    ]
+    SESSIONCLS = DashElectrumX
+    DAEMON = daemon.DashDaemon
+    DESERIALIZER = lib_tx_dash.DeserializerDash
+
+    @classmethod
+    def header_hash(cls, header):
+        '''Given a header return the hash.'''
+        import x11_hash
+        return double_sha256(header)
