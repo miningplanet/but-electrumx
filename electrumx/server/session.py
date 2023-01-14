@@ -1596,10 +1596,8 @@ class DashElectrumX(ElectrumX):
         '''Notify the client about changes in masternode list.'''
         await super()._notify_inner(touched, height_changed)
         for mn in self.mns.copy():
-            status = await self.daemon_request('masternode_list',
-                                               ('status', mn))
-            await self.send_notification('masternode.subscribe',
-                                         (mn, status.get(mn)))
+            status = await self.daemon_request('masternode_list', ('status', mn))
+            await self.send_notification('masternode.subscribe', (mn, status.get(mn)))
 
     # Masternode command handlers
     async def masternode_announce_broadcast(self, signmnb):
@@ -1622,8 +1620,7 @@ class DashElectrumX(ElectrumX):
 
         collateral: masternode collateral.
         '''
-        result = await self.daemon_request('masternode_list',
-                                           ('status', collateral))
+        result = await self.daemon_request('masternode_list', ('status', collateral))
         if result is not None:
             self.mns.add(collateral)
             return result.get(collateral)
@@ -1650,22 +1647,32 @@ class DashElectrumX(ElectrumX):
             # Only ENABLED masternodes are considered for the list.
             for line in mns:
                 mnstat = mns[line].split()
+                self.logger.info(f'Smartnode Line: {mnstat}')
+                mnstatus = mnstat[0]
+                mnpose = mnstat[1]
+                mnpayee = mnstat[2]
+                mnlastpaidtime = mnstat[3]
+                mnlastpaidheight = mnstat[4]
+                mnipport = mnstat[5]
+                # Fix active in seconds
+                mnactiveinseconds = 0
+                
                 if mnstat[0] == 'ENABLED':
                     # if last paid time == 0
-                    if int(mnstat[5]) == 0:
+                    if mnlastpaidtime == 0:
                         # use active seconds
-                        mnstat.append(int(mnstat[4]))
+                        mnstat.append(int(mnactiveinseconds))
                     else:
                         # now minus last paid
-                        delta = now - int(mnstat[5])
+                        delta = now - int(mnlastpaidtime)
                         # if > active seconds, use active seconds
-                        if delta >= int(mnstat[4]):
-                            mnstat.append(int(mnstat[4]))
+                        if delta >= int(mnactiveinseconds):
+                            mnstat.append(int(mnactiveinseconds))
                         # use active seconds
                         else:
                             mnstat.append(delta)
                     mn_queue.append(mnstat)
-            mn_queue = sorted(mn_queue, key=lambda x: x[8], reverse=True)
+            mn_queue = sorted(mn_queue, key=lambda x: x[1], reverse=True)
             return mn_queue
 
         def get_payment_position(payment_queue, address):
@@ -1685,13 +1692,24 @@ class DashElectrumX(ElectrumX):
         # Accordingly with the masternode payment queue, a custom list
         # with the masternode information including the payment
         # position is returned.
-        cache = self.session_mgr.mn_cache
-        if not cache or self.session_mgr.mn_cache_height != self.db.db_height:
-            full_mn_list = await self.daemon_request('masternode_list',
-                                                     ('full',))
+        # cache = self.session_mgr.mn_cache
+        cache = self.mn_cache
+        # if not cache or self.session_mgr.mn_cache_height != self.db.db_height:
+        if not cache or self.mn_cache_height != self.db.db_height:
+            self.logger.info(f'If ache = true  Get msternode list')
+            full_mn_list = await self.daemon_request('masternode_list', ('full',))
             mn_payment_queue = get_masternode_payment_queue(full_mn_list)
             mn_payment_count = len(mn_payment_queue)
             mn_list = []
+
+            # mnstatus = mnstat[0]
+            # mnpose = mnstat[1]
+            # mnpayee = mnstat[2]
+            # mnlastpaidtime = mnstat[3]
+            # mnlastpaidheight = mnstat[4]
+            # mnipport = mnstat[5]
+
+            # Fix response
             for key, value in full_mn_list.items():
                 mn_data = value.split()
                 mn_info = {
@@ -1699,11 +1717,11 @@ class DashElectrumX(ElectrumX):
                     'status': mn_data[0],
                     'protocol': mn_data[1],
                     'payee': mn_data[2],
-                    'lastseen': mn_data[3],
-                    'activeseconds': mn_data[4],
-                    'lastpaidtime': mn_data[5],
-                    'lastpaidblock': mn_data[6],
-                    'ip': mn_data[7]
+                    'lastseen': 0,
+                    'activeseconds': 0, #mn_data[6]
+                    'lastpaidtime': mn_data[3],
+                    'lastpaidblock': mn_data[4],
+                    'ip': mn_data[5]
                 }
                 mn_info['paymentposition'] = get_payment_position(
                     mn_payment_queue, mn_info['payee']
@@ -1718,7 +1736,8 @@ class DashElectrumX(ElectrumX):
                 mn_list.append(mn_info)
             cache.clear()
             cache.extend(mn_list)
-            self.session_mgr.mn_cache_height = self.db.db_height
+            self.mn_cache_height = self.db.db_height
+            # self.session_mgr.mn_cache_height = self.db.db_height
 
         # If payees is an empty list the whole masternode list is returned
         if payees:

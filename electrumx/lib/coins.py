@@ -4028,13 +4028,20 @@ class Butkoin(Coin):
     P2PKH_VERBYTE = bytes.fromhex("4c")
     P2SH_VERBYTES = (bytes.fromhex("10"),)
     WIF_BYTE = bytes.fromhex("cc")
-    TX_COUNT_HEIGHT = 569399
-    TX_COUNT = 2157510
+    TX_COUNT_HEIGHT = 119585
+    TX_COUNT = 261708
     TX_PER_BLOCK = 4
     RPC_PORT = 10998
     REORG_LIMIT = 5000
     PEERS = [
-        'electrum.butcoin.tech 50001',
+        '88.99.186.230 s50002 t50001',
+        '95.216.204.251 s50002 t50001',
+        '116.203.130.246 s50002 t50001',
+        '135.181.36.174 s50002 t50001',
+        '135.181.36.174 s50002 t50001',
+        '5.161.93.62 s50002 t50001',
+        '5.161.54.85 s50002 t50001',
+        'electrumx.butkoin.com s50002 t50001',
     ]
     SESSIONCLS = DashElectrumX
     DAEMON = daemon.DashDaemon

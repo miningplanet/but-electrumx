@@ -317,7 +317,7 @@ class DashDaemon(Daemon):
 
     async def masternode_list(self, params):
         '''Return the masternode status.'''
-        return await self._send_single('masternodelist', params)
+        return await self._send_single('smartnodelist', params)
 
     async def protx(self, params):
         '''Set of commands to execute ProTx related actions.'''
